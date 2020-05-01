@@ -1,0 +1,18 @@
+{
+  "name": "code-together",
+  "version": "1.0.0",
+  "description": "A web app that let's you code together with other people!",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Joel Geering",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "nedb": "^1.8.0",
+    "nedb-session-store": "^1.1.2"
+  }
+}
