@@ -15,7 +15,7 @@ const addContributorBtn = document.getElementById('adduser')
 /* PROD */
 let HOST = location.origin.replace(/^http/, 'ws')
 const ws = new WebSocket(HOST, id)
-//const ws = new WebSocket('ws://192.168.1.133:3030', id)
+//const ws = new WebSocket('ws://192.168.1.133:3019', id)
 
 ws.onopen = () =>{
     //console.log('connected!')

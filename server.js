@@ -11,11 +11,11 @@ const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt')
 // sanitizing user input
 const expressSanitizer = require('express-sanitizer')
-const WebSocket = require('ws')
+const {Server} = require('ws')
 // my own Login class
 const Login = require('./Login')
 
-const app = express()
+const server = express()
 
 
 // system variables
@@ -23,14 +23,14 @@ require('dotenv').config()
 
 const port = process.env.PORT || 3000
 
-app.use(express.static('public'))
+server.use(express.static('public'))
 // user input sanitizer
-app.use(expressSanitizer())
-app.set('view engine', 'ejs')
-app.use(bodyParser.json())
+server.use(expressSanitizer())
+server.set('view engine', 'ejs')
+server.use(bodyParser.json())
 
 // configuring the session i will use for login etc.
-app.use(session({
+server.use(session({
     secret: 's3creeetkiii',
     resave: false,
     saveUninitialized: false,
@@ -48,7 +48,7 @@ app.use(session({
 /****************** ROUTES ******************/
 
 /* index */
-app.get('/', (req, res) =>{
+server.get('/', (req, res) =>{
 
     // if the user is logged in, show his username in the top right corner
     if(req.session.isLoggedIn){
@@ -65,7 +65,7 @@ app.get('/', (req, res) =>{
 })
 
 /* Dashboard (only logged in) */
-app.get('/dashboard', (req, res) =>{
+server.get('/dashboard', (req, res) =>{
     if(req.session.isLoggedIn){
         const db = new Datastore('db/users.db')
         const codedb = new Datastore('db/code.db')
@@ -97,7 +97,7 @@ app.get('/dashboard', (req, res) =>{
 })
 
 // logout
-app.get('/logout', (req, res) =>{
+server.get('/logout', (req, res) =>{
     if(req.session){
         req.session.isLoggedIn = false
         req.session.userId = null
@@ -107,11 +107,11 @@ app.get('/logout', (req, res) =>{
 
 // register
 
-app.get('/register', (req, res) =>{
+server.get('/register', (req, res) =>{
     res.render('register')
 })
 
-app.post('/register', (req, res) =>{
+server.post('/register', (req, res) =>{
     let error = false
 
     // basic check to see if every element is at least 3 characters long
@@ -147,7 +147,7 @@ app.post('/register', (req, res) =>{
 })
 
 /* POST request for login */
-app.post('/login', (req, res) =>{
+server.post('/login', (req, res) =>{
 
     // creating a new instance of the login class.
     // params are bcrypt (for hashing the password) and the user Database
@@ -174,7 +174,7 @@ app.post('/login', (req, res) =>{
 
 /* POST FOR NEW PROJECT */
 // when a user creates a new project, it creates a new DB entry and sends him to the 'edit' page of that project
-app.post('/newproject', (req, res) =>{
+server.post('/newproject', (req, res) =>{
     // only logged in users can create new projects
     if(req.session.isLoggedIn && req.session.userId){
         const db = new Datastore('db/code.db')
@@ -198,7 +198,7 @@ app.post('/newproject', (req, res) =>{
 
 /* GET FOR EDITING PROJECT */
 
-app.get('/edit/:id', (req, res) =>{
+server.get('/edit/:id', (req, res) =>{
     const id = req.params.id
     const db = new Datastore('db/code.db')
     db.loadDatabase()
@@ -227,7 +227,7 @@ app.get('/edit/:id', (req, res) =>{
 })
 
 // loading the contributors for the /edit/:id page
-app.post('/loadcontributors', (req, res) =>{
+server.post('/loadcontributors', (req, res) =>{
     const db = new Datastore('db/code.db')
     const userdb = new Datastore('db/users.db')
     userdb.loadDatabase()
@@ -261,7 +261,7 @@ app.post('/loadcontributors', (req, res) =>{
     })
 })
 
-app.post('/searchcontributor', (req, res) =>{
+server.post('/searchcontributor', (req, res) =>{
     const db = new Datastore('db/users.db')
     db.loadDatabase()
 
@@ -277,8 +277,8 @@ app.post('/searchcontributor', (req, res) =>{
 
 /********************** WEBSOCKET *******************************/
 
-const socketServer = new WebSocket.Server({port: 3030})
-//const socketServer = new WebSocket.Server({server: app})
+const socketServer = new Server({server})
+//const socketServer = new WebSocket.Server({server: server})
 let clients = {}
 
 /* structure of the clients object
@@ -384,10 +384,10 @@ socketServer.on('connection', (client) => {
 
 /* 404 HANLDING */
 
-app.use(function(req, res, next){
+server.use(function(req, res, next){
     res.status(404).render('404', {errorPath: req.path})
 })
 
-app.listen(port, (req, res) =>{
+server.listen(port, (req, res) =>{
     console.log('NOW LISTENING ON ' + port)
 })
