@@ -1,10 +1,8 @@
 // this document is only loaded to edit a project
-let id = location.href.split('/')
-id = id[id.length-1]
+
 
 const contributorList = document.getElementById('contributor-list')
 const initLang = document.getElementById('initiallang').value
-
 const lang = document.getElementById('lang-options')
 const priv = document.getElementById('input-priv')
 const title = document.getElementById('projecttitle')
@@ -12,14 +10,15 @@ const addContributorInput = document.getElementById('add-contributor')
 const addContributorMsg = document.getElementById('add-contributor-msg')
 const addContributorBtn = document.getElementById('adduser')
 
-
+let id = location.href.split('/')
+id = id[id.length-1]
 let HOST = location.origin.replace(/^http/, 'ws')
 const ws = new WebSocket(HOST, id)
 
 ws.onopen = () =>{
     //console.log('connected!')
 
-    // every minute i send a ping to the server to keep the connection alive longer than 2 minutes without interaction
+    // every 6 seconds i send a ping to the server to keep the connection alive without timing out
     function ping(){
         ws.send(JSON.stringify({type: 'ping'}))
     }
