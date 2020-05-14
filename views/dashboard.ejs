@@ -1,0 +1,30 @@
+<%- include('partials/head') %>
+<body>
+    <header id="user-header">
+        <img src="img/person.png">
+        <p id="name"><%= username %></p>
+        <p id="dropdown-toggle">&gt;</p>
+        <div id="profile-dropdown">
+            <ul>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </div>
+    </header>
+    <main class="center">
+        <div class="content">
+            <h1>Dashboard</h1>
+            <button id="newproject-btn">New Project</button>
+            <h2 class="mg-top-big mg-bottom-small">My Projects</h2>
+            <% if(projects === 0){ %>
+            <p>You haven't created any projects so far!</p>
+            <% } else{ %><div class="projects-container"><% projects.forEach(project =>{ %>
+            <a href="/edit/<%= project._id %>" class="project-card">
+            <h3><%= project.title %></h3>
+            <p><%= project.lang %></p>
+            </a>
+            <% })%></div><% } %>
+        </div>
+    </main>
+    <script src="js/main.js"></script>
+</body>
+</html>

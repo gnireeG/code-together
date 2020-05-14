@@ -9,10 +9,15 @@
   "author": "Joel Geering",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^4.0.1",
+    "body-parser": "^1.19.0",
+    "dotenv": "^8.2.0",
     "ejs": "^3.1.2",
     "express": "^4.17.1",
+    "express-sanitizer": "^1.0.5",
     "express-session": "^1.17.1",
     "nedb": "^1.8.0",
-    "nedb-session-store": "^1.1.2"
+    "nedb-session-store": "^1.1.2",
+    "ws": "^7.2.5"
   }
 }

@@ -1,0 +1,62 @@
+<%- include('partials/head') %>
+<body>
+    
+    <% if(!success && error === 'codeNotFound'){ %>
+    <p>Could not find that project :(</p>
+    <p><a href="/">Login</a> to create a new project</p>
+    <% } else if(!success && error === 'noPermission'){ %>
+    <p>You don't have the permission to access this Project.<br>
+    <a href="/">Login</a> or ask the owner of this project to add you to the contributors.</p>
+    <% } else{ %>
+    
+    <aside id="menu">
+        <div id="menu-toggle"><i class="fas fa-bars"></i></div>
+        <i class="fas fa-home"></i>&nbsp;<a href="/dashboard">Dashboard</a>
+        <h3 class="mg-top-small">Project settings</h3>
+        <label for="projecttitle">Project title</label><br>
+        <input type="text" value="<%= project.title %>" id="projecttitle">
+        <div class="flex mg-top-small">
+            <p>Protected</p>
+            <label class="switch">
+                <input <% if(project.privacy === 'protected'){%>checked <% } %>type="checkbox" id="input-priv">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <p class="small mg-top-small">A protected project can only be edited by invited people.</p>
+        <div class="flex mg-top-small mg-bottom-big">
+            <p class="mg-top-small">Language</p>
+            <select id="lang-options">
+                <option <% if(project.lang === 'none'){ %>selected<% } %> value="none">Just text!</option>
+                <option <% if(project.lang === 'javascript'){ %>selected<% } %> value="javascript">Javascript</option>
+                <option <% if(project.lang === 'php'){ %>selected<% } %> value="php">PHP</option>
+                <option <% if(project.lang === 'css'){ %>selected<% } %> value="css">CSS</option>
+                <option <% if(project.lang === 'python'){ %>selected<% } %> value="python">Python</option>
+            </select>
+        </div>
+        
+        <label for="add-contributor">Add a contributor</label>
+        <div class="flex">
+            <input type="text" name="add-contributor" id="add-contributor">
+            <button id="adduser">+</button>
+        </div>
+        <p class="small mg-top-small" id="add-contributor-msg">Search for a user</p>
+        <p class="mg-top-small">Contributors</p>
+        <ul class="mg-bottom-small" id="contributor-list"></ul>
+    </aside>
+    <input type="hidden" id="initialcode" value="<%= project.code %>">
+    <input type="hidden" id="initiallang" value="<%= project.lang %>">
+    <input type="hidden" id="projectadmin" value="<%= project.user %>">
+    <div id="codeeditor"></div>
+    <div id="test"></div>
+    <link rel="stylesheet" href="/codemirror/codemirror.css">
+    <link rel="stylesheet" href="/codemirror/themes/ayu-mirage.css">
+    <script src="/codemirror/codemirror.js"></script>
+    <script src="/codemirror/mode/css/css.js"></script>
+    <script src="/codemirror/mode/php/php.js"></script>
+    <script src="/codemirror/mode/python/python.js"></script>
+    <script src="/codemirror/mode/javascript/javascript.js"></script>
+    
+    <script src="/js/code.js"></script>
+    <% } %>
+    <script src="/js/main.js"></script>
+</body>

@@ -1,0 +1,32 @@
+<%- include('partials/head') %>
+<body>
+    <header id="user-header" <% if(!username){ %>class="wide"<% }%>>
+        <img src="img/person.png">
+        <% if(username){ %>
+        <p id="name"><%= username %></p>
+        <% } else { %>
+        <p id="name">Login</p>
+        <% } %>
+        <p id="dropdown-toggle">&gt;</p>
+        <div id="profile-dropdown">
+            <% if(username){ %>
+            <ul>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+            <% } else { %>
+                <form action="" method="post" id="loginform">
+                <input required type="text" id="username">
+                <input required type="password" id="password">
+                <a href="/register">register</a><input type="submit" id="login-submit" value="login">
+                </form>
+                <p id="loginerror">Please try again.</p>
+            <% } %>
+
+        </div>
+    </header>
+    <h1>Hallo :)</h1>
+    <p>test</p>
+    <script src="js/main.js"></script>
+</body>
+</html>
