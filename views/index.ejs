@@ -7,7 +7,7 @@
         <% } else { %>
         <p id="name">Login</p>
         <% } %>
-        <p id="dropdown-toggle">&gt;</p>
+        <p id="dropdown-toggle"><i class="fas fa-chevron-circle-down"></i></p>
         <div id="profile-dropdown">
             <% if(username){ %>
             <ul>
@@ -16,17 +16,25 @@
             </ul>
             <% } else { %>
                 <form action="" method="post" id="loginform">
+                <label for="username">Username</label><br>
                 <input required type="text" id="username">
+                <label for="password">Password</label><br>
                 <input required type="password" id="password">
-                <a href="/register">register</a><input type="submit" id="login-submit" value="login">
+                <div class="flex mg-top-small"><a href="/register">register</a><input type="submit" id="login-submit" value="login"></div>
                 </form>
                 <p id="loginerror">Please try again.</p>
             <% } %>
 
         </div>
     </header>
-    <h1>Hallo :)</h1>
-    <p>test</p>
+    <main class="center mg-top-huge">
+        <div class="content">
+            <h1 class="mg-top-big">Coding together!</h1>
+            <p>Create an account or login to start coding!</p>
+            <p>You can create "Protected" and "Public" projects. In "Public" projects, anyone who has this link can access the project.<br>If you set the privacy to "Private", only invited users can join your project. (They have to register)</p>
+            
+        </div>
+    </main>
     <script src="js/main.js"></script>
 </body>
 </html>

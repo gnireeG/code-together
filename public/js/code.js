@@ -1,3 +1,4 @@
+// this document is only loaded to edit a project
 let id = location.href.split('/')
 id = id[id.length-1]
 
@@ -12,10 +13,8 @@ const addContributorMsg = document.getElementById('add-contributor-msg')
 const addContributorBtn = document.getElementById('adduser')
 
 
-/* PROD */
 let HOST = location.origin.replace(/^http/, 'ws')
 const ws = new WebSocket(HOST, id)
-//const ws = new WebSocket('ws://192.168.1.133:3019', id)
 
 ws.onopen = () =>{
     //console.log('connected!')
@@ -24,7 +23,7 @@ ws.onopen = () =>{
     function ping(){
         ws.send(JSON.stringify({type: 'ping'}))
     }
-    setInterval(ping, 60000)
+    setInterval(ping, 6000)
 }
 
 // setting the code received from the WebSocket
@@ -38,6 +37,7 @@ ws.onmessage = (e) =>{
             codeMirror.setValue(data.code)
             codeMirror.setCursor(cursorPos)
             break
+        // changing the privacy setting
         case 'privacy':
             if(data.privacy === 'protected'){
                 priv.checked = true
@@ -45,6 +45,7 @@ ws.onmessage = (e) =>{
                 priv.checked = false
             }
             break
+        // changing the programming language dropdown and codemirror settings
         case 'lang':
             codeMirror.setOption("mode", data.lang)
             const options = lang.options
@@ -54,13 +55,16 @@ ws.onmessage = (e) =>{
                 }
             }
             break
+        // removing a contributor
         case 'remove-user':
             const userDom = document.querySelector(`[data-id=${data.id}]`)
             userDom.parentNode.removeChild(userDom)
             break
+        // updating the title
         case 'title':
             title.value = data.title
             break
+        // adding a contributor
         case 'add-contributor':
             showContributor({username: data.username, id: data.id})
             break
@@ -69,17 +73,23 @@ ws.onmessage = (e) =>{
     }
 }
 
+ws.onclose = () =>{
+    document.getElementById('closemsg').style.display = 'block'
+}
 
+
+// CodeMirror is used for syntax highlighting
 
 let codeMirror = CodeMirror(document.getElementById('codeeditor'), {
-    value: 'coding lorem ipsum',
+    value: 'Start coding',
+    // initLang comes from an input type=hidden which is rendered server sided on the GET request
     mode: initLang,
     theme: 'ayu-mirage',
     lineNumbers: true,
     tabSize: 2
 })
 
-
+// everytime the user types something, the code will be sent to the other connected users
 const textarea = document.getElementsByTagName('textarea')[0]
 textarea.addEventListener('keyup', () =>{
     ws.send(JSON.stringify({type: 'code', code: codeMirror.getValue()}))
@@ -94,11 +104,13 @@ codeMirror.setValue(document.getElementById('initialcode').value)
 
 lang.addEventListener('change', () =>{
     const newLang = lang.value
+    // changing the language mode for the code editor
     codeMirror.setOption("mode", newLang)
+    // sending the update to the other connected users
     ws.send(JSON.stringify({type: 'lang', lang: newLang}))
 })
 
-
+// when changing the checkbox for the privacy, sending the update to the other clients
 priv.addEventListener('change', () =>{
     let val
     if(priv.checked){
@@ -109,7 +121,7 @@ priv.addEventListener('change', () =>{
     ws.send(JSON.stringify({type: 'privacy', privacy: val}))
 })
 
-
+// function to load the contributors for this project
 async function loadContributors(){
     const body = {
         id: id
@@ -130,7 +142,9 @@ async function loadContributors(){
 
 loadContributors()
 
+// function to display the loaded contributors
 function showContributor(user){
+    // not adding a user twice to the page
     if(!document.querySelector(`#contributor-list [data-id=${user.id}]`)){
         let li = document.createElement('li')
         li.classList.add('flex')
@@ -150,27 +164,31 @@ function showContributor(user){
     }
 }
 
+// event listener which triggers the removal of a contributor
 document.addEventListener('click', function(e){
     if(e.target && e.target.hasAttribute('data-remove-user')){
         const userToRemove = e.target.parentNode.getAttribute('data-id')
+        // sending the update to the other clients
         ws.send(JSON.stringify({type: 'remove-user', id: userToRemove}))
+        // removing the user on this client
         const userDom = document.querySelector(`[data-id=${userToRemove}]`)
         userDom.parentNode.removeChild(userDom)
     }
 })
 
-
+// updating the title
 title.addEventListener('keyup', () =>{
     ws.send(JSON.stringify({type: 'title', title: title.value}))
 })
 
+// this function is used as a named callback to add a user to the contributors
 let userToAdd = {}
 function addUserHandler(){
     ws.send(JSON.stringify({type: 'add-contributor', username: userToAdd.username, id: userToAdd.id}))
     showContributor(userToAdd)
 }
 
-
+// search function for adding contributors
 addContributorInput.addEventListener('keyup', async () =>{
     const val = addContributorInput.value
     if(val.length > 2){
@@ -189,12 +207,14 @@ addContributorInput.addEventListener('keyup', async () =>{
             addContributorMsg.style.color = 'green'
             addContributorBtn.style.backgroundColor = 'green'
             addContributorBtn.disabled = false
+            //binding the add user button to the handler from above
             addContributorBtn.addEventListener('click', addUserHandler)
         } else{
             addContributorMsg.innerText = 'No user found'
             addContributorMsg.style.color = 'red'
             addContributorBtn.style.backgroundColor = 'gray'
             addContributorBtn.disabled = true
+            // removing the event handler from above because this user doesn't exist
             addContributorBtn.removeEventListener('click', addUserHandler)
         }
     }

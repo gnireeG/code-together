@@ -1,14 +1,15 @@
 <%- include('partials/head') %>
 <body>
-    
+    <% /****************** PROJECT NOT FOUND *******************/ %>
     <% if(!success && error === 'codeNotFound'){ %>
     <p>Could not find that project :(</p>
     <p><a href="/">Login</a> to create a new project</p>
+    <% /****************** NO PERMISSION FOR THIS PROJECT *******************/ %>
     <% } else if(!success && error === 'noPermission'){ %>
     <p>You don't have the permission to access this Project.<br>
     <a href="/">Login</a> or ask the owner of this project to add you to the contributors.</p>
     <% } else{ %>
-    
+    <% /****************** LOADING CODE EDITOR / MENU ETC. *******************/ %>
     <aside id="menu">
         <div id="menu-toggle"><i class="fas fa-bars"></i></div>
         <i class="fas fa-home"></i>&nbsp;<a href="/dashboard">Dashboard</a>
@@ -43,11 +44,11 @@
         <p class="mg-top-small">Contributors</p>
         <ul class="mg-bottom-small" id="contributor-list"></ul>
     </aside>
+    <div id="closemsg"><div>Lost connection to the server.<br>Please try to reload the page.</div></div>
     <input type="hidden" id="initialcode" value="<%= project.code %>">
     <input type="hidden" id="initiallang" value="<%= project.lang %>">
     <input type="hidden" id="projectadmin" value="<%= project.user %>">
     <div id="codeeditor"></div>
-    <div id="test"></div>
     <link rel="stylesheet" href="/codemirror/codemirror.css">
     <link rel="stylesheet" href="/codemirror/themes/ayu-mirage.css">
     <script src="/codemirror/codemirror.js"></script>

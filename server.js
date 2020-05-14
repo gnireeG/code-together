@@ -16,6 +16,7 @@ const WebSocket = require('ws')
 const Login = require('./Login')
 const http = require('http')
 
+// using app = express() and an httpServer because only with express, websocket wouldn't work.
 const app = express()
 const httpServer = http.createServer(app)
 
@@ -280,7 +281,6 @@ app.post('/searchcontributor', (req, res) =>{
 /********************** WEBSOCKET *******************************/
 
 const socketServer = new WebSocket.Server({'server': httpServer})
-//const socketServer = new WebSocket.Server({server: server})
 let clients = {}
 
 /* structure of the clients object
@@ -391,5 +391,5 @@ app.use(function(req, res, next){
 })
 
 httpServer.listen(port, (req, res) =>{
-    console.log('NOW LISTENING ON ' + port)
+    console.log('server is listeing on port ' + port)
 })
