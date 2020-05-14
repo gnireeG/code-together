@@ -34,7 +34,7 @@ app.use(bodyParser.json())
 
 // configuring the session i will use for login etc.
 app.use(session({
-    secret: 's3creeetkiii',
+    secret: process.env.SECRET || 'ENTER YOUR SECRET KEY IN ENV VARIABLES!',
     resave: false,
     saveUninitialized: false,
     cookie: {
